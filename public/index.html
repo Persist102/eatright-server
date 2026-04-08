@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+  <title>EatRight — Sog'lom ovqatlanish</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#06141B">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EatRight">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-startup-image" href="/icons/icon-512.png">
+
+  <!-- Figma template fonts: Raleway + Quicksand -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=22">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="#" onclick="showPage('home')">EatRight</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#" onclick="showPage('home')" class="nav-a active" data-i18n="nav_home">Bosh sahifa</a>
+      <a href="#" onclick="showPage('recipes')" class="nav-a" data-i18n="nav_recipes">Retseptlar</a>
+      <a href="#" onclick="showPage('scan')" class="nav-a" data-i18n="nav_scan">Skanerlash</a>
+      <a href="#" onclick="showPage('trainer')" class="nav-a" data-i18n="nav_trainer">Trener</a>
+      <a href="#" onclick="showPage('diary')" class="nav-a" data-i18n="nav_diary">Kundalik</a>
+      <a href="#" onclick="showPage('profile')" class="nav-a" data-i18n="nav_profile">Profil</a>
+      <!-- Mobile lang switcher -->
+      <div class="lang-switcher mobile-lang">
+        <button class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <!-- Language switcher -->
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="uz" onclick="setLang('uz')">UZ</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="ru" onclick="setLang('ru')">RU</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+      </div>
+      <!-- PWA Install -->
+      <button class="tbtn tbtn-fill sm" id="installBtn" onclick="installPWA()" style="display:none;align-items:center;gap:6px">
+        <i class="fas fa-download"></i> O'rnatish
+      </button>
+      <!-- Liquid Toggle -->
+      <button class="liquid-toggle" id="themeToggle" onclick="toggleTheme()" title="Mavzu">
+        <div class="lt-track"></div>
+        <span class="lt-label" id="ltLabel">Dark</span>
+        <div class="lt-knob" id="ltKnob">
+          <i class="fas fa-moon" id="ltIcon"></i>
+        </div>
+      </button>
+      <div id="authBtns">
+        <button class="tbtn tbtn-line sm" onclick="showPage('login')" data-i18n="nav_login">Kirish</button>
+        <button class="tbtn tbtn-fill sm" onclick="showPage('register')" data-i18n="nav_register">Ro'yxat</button>
+      </div>
+      <div id="userInfo" style="display:none">
+        <span id="userName" class="user-name"></span>
+        <button class="tbtn tbtn-line sm" onclick="logout()" data-i18n="nav_logout">Chiqish</button>
+      </div>
+      <button class="burger" onclick="toggleNav()"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<!-- 5-TAB BOTTOM NAV (mobile) — Figma EasyHealth style -->
+<nav class="bottom-nav" id="bottomNav">
+  <a class="bn-tab active" onclick="showPage('home')" id="bnt-home">
+    <i class="fas fa-home"></i>
+    <span data-i18n="bn_home">Asosiy</span>
+  </a>
+  <a class="bn-tab" onclick="showPage('recipes')" id="bnt-recipes">
+    <i class="fas fa-utensils"></i>
+    <span data-i18n="bn_recipes">Retseptlar</span>
+  </a>
+  <a class="bn-tab bn-center" onclick="showPage('scan')" id="bnt-scan">
+    <div class="bn-center-btn">
+      <i class="fas fa-camera"></i>
+    </div>
+  </a>
+  <a class="bn-tab" onclick="showPage('trainer')" id="bnt-trainer">
+    <i class="fas fa-dumbbell"></i>
+    <span data-i18n="bn_trainer">Trener</span>
+  </a>
+  <a class="bn-tab" onclick="showPage('profile')" id="bnt-profile">
+    <i class="fas fa-user"></i>
+    <span data-i18n="bn_profile">Profil</span>
+  </a>
+</nav>
+
+<!-- HOME -->
+<template id="tpl-home">
+<div>
+
+  <!-- ===== HERO — Cal AI style ===== -->
+  <section class="ea-hero">
+    <!-- Background decoration blobs -->
+    <div class="ea-blob ea-blob-1"></div>
+    <div class="ea-blob ea-blob-2"></div>
+    <div class="ea-blob ea-blob-3"></div>
+    <div class="ea-hero-inner">
+
+      <!-- LEFT -->
+      <div class="ea-hero-left">
+
+        <!-- Social proof badge -->
+        <div class="ea-badge">
+          <div class="ea-avatars">
+            <div class="ea-av" style="background:#5BA3C8">A</div>
+            <div class="ea-av" style="background:#4ade80">B</div>
+            <div class="ea-av" style="background:#f59e0b">C</div>
+          </div>
+          <span data-i18n="hero_badge">3,200+ foydalanuvchi &nbsp;⭐&nbsp; 4.9 reyting</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="ea-h1">
+          <span data-i18n="hero_line1">EatRight bilan</span><br>
+          <span class="ea-grad" data-i18n="hero_line2">Ovqatingizni</span><br>
+          <span data-i18n="hero_line3">nazorat qiling</span>
+        </h1>
+
+        <!-- Description -->
+        <p class="ea-desc" data-i18n="hero_desc">
+          EatRight — AI yordamida oson kaloriya kuzatish ilovasi. Ovqat rasmini oling, shtrix-kodni skaner qiling yoki taoming nomini kiriting va bir zumda kaloriya hamda ozuqa ma'lumotini oling.
+        </p>
+
+        <!-- Store buttons -->
+        <div class="ea-store-row">
+          <a href="#" class="ea-store-btn">
+            <i class="fab fa-apple ea-s-icon"></i>
+            <div class="ea-s-text">
+              <span class="ea-s-sub" data-i18n="hero_appstore_sub">Download on the</span>
+              <span class="ea-s-main" data-i18n="hero_appstore_main">App Store</span>
+            </div>
+          </a>
+          <a href="#" class="ea-store-btn">
+            <i class="fab fa-google-play ea-s-icon"></i>
+            <div class="ea-s-text">
+              <span class="ea-s-sub" data-i18n="hero_google_sub">GET IT ON</span>
+              <span class="ea-s-main" data-i18n="hero_google_main">Google Play</span>
+            </div>
+          </a>
+        </div>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT: Phone mockups -->
+      <div class="ea-phones-wrap">
+
+        <!-- Floating food detection tags (outside phones, like Cal AI) -->
+        <div class="ea-food-tag" style="top:15%;left:-8%">Blueberries<b>8</b></div>
+        <div class="ea-food-tag" style="top:8%;right:-6%">Pancakes<b>595</b></div>
+        <div class="ea-food-tag" style="top:55%;left:-4%">Syrup<b>12</b></div>
+
+        <!-- Back phone: Scanner -->
+        <div class="ea-phone ea-ph-back">
+          <div class="ea-ph-inner">
+            <div class="ea-ph-bar">
+              <span class="ea-ph-time">9:41</span>
+              <span class="ea-ph-icons">▶ ⚡</span>
+            </div>
+            <div class="ea-scan-ui">
+              <div class="ea-scan-nav">
+                <div class="ea-scan-circle">←</div>
+                <span>Scanner</span>
+                <div class="ea-scan-circle">⋯</div>
+              </div>
+              <div class="ea-cam-area">
+                <div class="ea-cam-frame"></div>
+              </div>
+              <div class="ea-scan-foot">
+                <div class="ea-scan-food-btn"><i class="fas fa-search"></i> Scan food</div>
+                <div class="ea-shutter-btn"></div>
+                <div style="width:40px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Front phone: Nutrition result -->
+        <div class="ea-phone ea-ph-front">
+          <div class="ea-ph-inner ea-result-ph">
+            <div class="ea-ph-bar dark">
+              <span class="ea-ph-time">9:41</span>
+              <span class="ea-ph-icons">▶ ⚡</span>
+            </div>
+            <!-- Mini food photo -->
+            <div class="ea-mr-photo">
+              <div class="ea-mr-photo-bg"></div>
+              <div class="ea-mr-topbar">
+                <div class="ea-scan-circle sm">←</div>
+                <span>Nutrition</span>
+                <div class="ea-scan-circle sm">⋯</div>
+              </div>
+            </div>
+            <!-- Mini result data -->
+            <div class="ea-mr-sheet">
+              <div class="ea-mr-cat">Breakfast</div>
+              <div class="ea-mr-name">Pancakes with<br>blueberries &amp; syrup</div>
+              <div class="ea-mr-grid">
+                <div class="ea-mr-cell">
+                  <span class="ea-mr-ico">🔥</span>
+                  <div><small>Calories</small><b>615</b></div>
+                </div>
+                <div class="ea-mr-cell">
+                  <span class="ea-mr-ico">🌾</span>
+                  <div><small>Carbs</small><b>93g</b></div>
+                </div>
+                <div class="ea-mr-cell">
+                  <span class="ea-mr-ico">🥩</span>
+                  <div><small>Protein</small><b>11g</b></div>
+                </div>
+                <div class="ea-mr-cell">
+                  <span class="ea-mr-ico">🧈</span>
+                  <div><small>Fats</small><b>21g</b></div>
+                </div>
+              </div>
+              <div class="ea-mr-hs">
+                <div class="ea-mr-hs-row">
+                  <span>❤️ Health score</span>
+                  <span>7/10</span>
+                </div>
+                <div class="ea-mr-bar"><div class="ea-mr-fill" style="width:70%"></div></div>
+              </div>
+              <div class="ea-mr-btns">
+                <button class="ea-mr-fix">✦ Fix Results</button>
+                <button class="ea-mr-done">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Arrow decoration -->
+        <div class="ea-arrow-deco">↷</div>
+
+      </div><!-- /phones-wrap -->
+    </div><!-- /inner -->
+  </section>
+
+  <!-- Stats row -->
+  <div class="ea-stats-row">
+    <div class="ea-stat"><span class="ea-stat-num">12,500+</span><span class="ea-stat-lbl" data-i18n="stat1_lbl">Skanerlangan ovqatlar</span></div>
+    <div class="ea-stat-div"></div>
+    <div class="ea-stat"><span class="ea-stat-num">950K+</span><span class="ea-stat-lbl" data-i18n="stat2_lbl">Kuzatilgan kaloriya</span></div>
+    <div class="ea-stat-div"></div>
+    <div class="ea-stat"><span class="ea-stat-num">3,200+</span><span class="ea-stat-lbl" data-i18n="stat3_lbl">Faol foydalanuvchilar</span></div>
+  </div>
+
+  <!-- FOOD CATEGORIES — Figma template style -->
+  <section class="fcat-section">
+    <div class="fcat-inner">
+      <div class="fcat-header">
+        <span class="fcat-label" data-i18n="fcat_label">EatRight nima taklif qiladi?</span>
+        <h2 class="fcat-title"><span data-i18n="fcat_title1">Sog'lom ovqatlanish</span><br><span class="ea-grad" data-i18n="fcat_title2">bo'limlari</span></h2>
+      </div>
+      <div class="fcat-grid">
+        <div class="fcat-card fcat-fish" onclick="openCatModal('fish')">
+          <div class="fcat-icon-wrap">🐟</div>
+          <h3 data-i18n="fcat_fish_h">Baliq va Dengiz</h3>
+          <p data-i18n="fcat_fish_p">Omega-3 boy proteinlar va sog'lom yog'lar</p>
+          <span class="fcat-badge" data-i18n="fcat_fish_b">124 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+        <div class="fcat-card fcat-fruit" onclick="openCatModal('fruit')">
+          <div class="fcat-icon-wrap">🍓</div>
+          <h3 data-i18n="fcat_fruit_h">Mevalar</h3>
+          <p data-i18n="fcat_fruit_p">Vitaminlar, minerallar va antioksidantlar</p>
+          <span class="fcat-badge" data-i18n="fcat_fruit_b">89 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+        <div class="fcat-card fcat-veg" onclick="openCatModal('veg')">
+          <div class="fcat-icon-wrap">🥦</div>
+          <h3 data-i18n="fcat_veg_h">Sabzavotlar</h3>
+          <p data-i18n="fcat_veg_p">Tolali, vitaminli va foydali taomlar</p>
+          <span class="fcat-badge" data-i18n="fcat_veg_b">203 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+        <div class="fcat-card fcat-vegan" onclick="openCatModal('vegan')">
+          <div class="fcat-icon-wrap">🌿</div>
+          <h3 data-i18n="fcat_vegan_h">Vegan</h3>
+          <p data-i18n="fcat_vegan_p">100% o'simlik asosidagi sog'lom menyu</p>
+          <span class="fcat-badge" data-i18n="fcat_vegan_b">156 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+        <div class="fcat-card fcat-protein" onclick="openCatModal('protein')">
+          <div class="fcat-icon-wrap">🥩</div>
+          <h3 data-i18n="fcat_protein_h">Oqsil</h3>
+          <p data-i18n="fcat_protein_p">Mushak uchun yuqori oqsilli taomlar</p>
+          <span class="fcat-badge" data-i18n="fcat_protein_b">97 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+        <div class="fcat-card fcat-grain" onclick="openCatModal('grain')">
+          <div class="fcat-icon-wrap">🌾</div>
+          <h3 data-i18n="fcat_grain_h">Don va Boshoqlar</h3>
+          <p data-i18n="fcat_grain_p">Murakkab uglevodlar va tolalar manbai</p>
+          <span class="fcat-badge" data-i18n="fcat_grain_b">68 ta taom</span>
+          <span class="fcat-info-hint" data-i18n="fcat_more">Batafsil →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 1 -->
+  <div class="tsla-section">
+    <div class="tsla-sec-visual">
+      <div class="tsec-icon-wrap accent-blue">
+        <i class="fas fa-camera-retro"></i>
+      </div>
+    </div>
+    <div class="tsla-sec-content">
+      <span class="tsla-sec-label" data-i18n="sec1_lbl">01 — AI Skanerlash</span>
+      <h2 data-i18n="sec1_h">Kamera bilan bir marta bosing</h2>
+      <p data-i18n="sec1_p">Ovqat rasmini yuklang yoki kamera bilan suratga oling. Gemini 2.0 Flash kaloriya, oqsil, yog', uglevodlarni avtomatik aniqlaydi.</p>
+      <div class="tsla-sec-btns">
+        <button class="tbtn tbtn-fill sm" onclick="showPage('scan')" data-i18n="sec1_btn">Skanerlash →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="tsla-section alt">
+    <div class="tsla-sec-content">
+      <span class="tsla-sec-label" data-i18n="sec2_lbl">02 — Shaxsiy norma</span>
+      <h2 data-i18n="sec2_h">Sizga mos kunlik kaloriya</h2>
+      <p data-i18n="sec2_p">Yosh, vazn, bo'y va faollik darajangiz asosida Mifflin-St Jeor formulasi yordamida aniq kaloriya normangiz hisoblanadi. BMI ham ko'rsatiladi.</p>
+      <div class="tsla-sec-btns">
+        <button class="tbtn tbtn-fill sm" onclick="showPage('setup')" data-i18n="sec2_btn">Hisoblash →</button>
+      </div>
+    </div>
+    <div class="tsla-sec-visual">
+      <div class="tsec-icon-wrap accent-green">
+        <i class="fas fa-calculator"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="tsla-section">
+    <div class="tsla-sec-visual">
+      <div class="tsec-icon-wrap accent-purple">
+        <i class="fas fa-chart-pie"></i>
+      </div>
+    </div>
+    <div class="tsla-sec-content">
+      <span class="tsla-sec-label" data-i18n="sec3_lbl">03 — Kundalik</span>
+      <h2 data-i18n="sec3_h">Progress ringida kuzating</h2>
+      <p data-i18n="sec3_p">Har kuni yegan ovqatlaringiz qayd etiladi. Kaloriya progress halqasi va holat ko'rsatkichlari orqali real vaqtda nazorat qiling.</p>
+      <div class="tsla-sec-btns">
+        <button class="tbtn tbtn-fill sm" onclick="showPage('diary')" data-i18n="sec3_btn">Kundalikni ko'rish →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER SECTION -->
+  <div class="tsla-footer-section">
+    <h2 data-i18n="footer_h">Boshlashga tayyormisiz?</h2>
+    <p data-i18n="footer_p">Bepul ro'yxatdan o'ting va bugundan boshlab sog'lom ovqatlanishni nazorat qiling</p>
+    <div class="tsla-btns">
+      <button class="tbtn tbtn-fill" onclick="showPage('register')" data-i18n="footer_btn1">Hoziroq boshlash</button>
+      <button class="tbtn tbtn-line" onclick="showPage('login')" data-i18n="footer_btn2">Hisobingiz bormi? Kiring</button>
+    </div>
+  </div>
+  <div style="text-align:center; padding: 20px 0 8px; border-top: 1px solid rgba(0,0,0,0.08); margin-top: 16px;">
+    <a href="/privacy" style="font-size:0.82rem; color: var(--c5, #8a9ab5); text-decoration: none; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">Maxfiylik Siyosati</a>
+    <span style="margin: 0 8px; color: var(--c5, #8a9ab5); opacity: 0.4;">·</span>
+    <span style="font-size:0.82rem; color: var(--c5, #8a9ab5); opacity: 0.5;">&copy; 2026 EatRight</span>
+  </div>
+</div>
+</template>
+
+<!-- SCAN -->
+<template id="tpl-scan">
+
+<!-- ── UPLOAD SCREEN ── -->
+<div class="cal-scan-page" id="scanUploadScreen">
+  <div class="cal-upload-zone" id="calUploadZone">
+    <div class="cal-upload-inner" id="uploadPlaceholder" onclick="document.getElementById('fileInput').click()">
+      <div class="cal-upload-icon"><i class="fas fa-camera"></i></div>
+      <p class="cal-upload-title">Ovqat rasmini oling</p>
+      <p class="cal-upload-sub">Kamera · Galereya · 10MB</p>
+    </div>
+    <img id="previewImg" style="display:none" class="cal-preview-img">
+    <button class="cal-change-btn" id="calChangeBtn" style="display:none" onclick="document.getElementById('fileInput').click()">
+      <i class="fas fa-arrows-rotate"></i> O'zgartirish
+    </button>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="previewImage(event)">
+  <div class="cal-scan-actions">
+    <button class="cal-analyze-btn" onclick="doScan()" id="scanBtn">
+      <i class="fas fa-wand-magic-sparkles"></i> AI tahlil qilsin
+    </button>
+  </div>
+  <div id="scanLoading" style="display:none" class="cal-loading">
+    <div class="cal-loading-ring"></div>
+    <p>AI ovqatni tahlil qilyapti...</p>
+  </div>
+  <div class="cal-history-section">
+    <h3 class="cal-hist-title">So'nggi skanerlar</h3>
+    <div id="scanHistory" class="scan-history"></div>
+  </div>
+</div>
+
+<!-- ── NUTRITION RESULT (Cal AI style, full-screen) ── -->
+<div id="scanResult" style="display:none" class="cnv-screen">
+
+  <!-- Photo + floating bubble -->
+  <div class="cnv-photo-wrap">
+    <img id="rPhoto" src="" alt="" class="cnv-photo-img">
+    <div class="cnv-food-bubble" id="rFoodBubble">
+      <span class="cnv-bubble-name" id="rBubbleName"></span>
+      <span class="cnv-bubble-cal" id="rBubbleCal"></span>
+    </div>
+    <div class="cnv-topbar">
+      <button class="cnv-icon-btn" onclick="resetScan()"><i class="fas fa-arrow-left"></i></button>
+      <span class="cnv-nav-title">Nutrition</span>
+      <button class="cnv-icon-btn"><i class="fas fa-ellipsis"></i></button>
+    </div>
+  </div>
+
+  <!-- Sheet -->
+  <div class="cnv-sheet">
+
+    <!-- Category + time -->
+    <div class="cnv-sheet-meta">
+      <span class="cnv-category-lbl" id="rCategory"></span>
+      <span class="cnv-time" id="rTime"></span>
+    </div>
+
+    <!-- Food name + serving counter -->
+    <div class="cnv-food-row">
+      <h2 class="cnv-food-name" id="rFoodName"></h2>
+      <div class="cnv-srv-ctrl">
+        <button class="cnv-srv-btn" onclick="changeServing(-1)">−</button>
+        <span class="cnv-srv-num" id="rServing">1</span>
+        <button class="cnv-srv-btn" onclick="changeServing(1)">+</button>
+      </div>
+    </div>
+
+    <!-- 2×2 Macro grid -->
+    <div class="cnv-macro-grid">
+      <div class="cnv-mg-card cnv-mg-cal">
+        <span class="cnv-mg-emoji">🔥</span>
+        <div class="cnv-mg-val" id="rCalBadge"></div>
+        <div class="cnv-mg-label">Kaloriya</div>
+      </div>
+      <div class="cnv-mg-card cnv-mg-carb">
+        <span class="cnv-mg-emoji">🌾</span>
+        <div class="cnv-mg-val" id="rCarbs"></div>
+        <div class="cnv-mg-label">Uglevod</div>
+      </div>
+      <div class="cnv-mg-card cnv-mg-prot">
+        <span class="cnv-mg-emoji">🥩</span>
+        <div class="cnv-mg-val" id="rProtein"></div>
+        <div class="cnv-mg-label">Oqsil</div>
+      </div>
+      <div class="cnv-mg-card cnv-mg-fat">
+        <span class="cnv-mg-emoji">🧈</span>
+        <div class="cnv-mg-val" id="rFat"></div>
+        <div class="cnv-mg-label">Yog'</div>
+      </div>
+    </div>
+
+    <!-- Health Score -->
+    <div class="cnv-health-card">
+      <div class="cnv-health-row">
+        <div class="cnv-health-left">
+          <div class="cnv-heart-wrap"><i class="fas fa-heart cnv-heart"></i></div>
+          <span class="cnv-health-lbl">Health score</span>
+        </div>
+        <span class="cnv-health-num" id="rHealthScore"></span>
+      </div>
+      <div class="cnv-bar-track">
+        <div class="cnv-bar-fill" id="rHealthFill"></div>
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div id="rIngredientsWrap" style="display:none">
+      <p class="cnv-sec-title">Tarkib</p>
+      <div class="cal-ing-list" id="rIngredients"></div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="cnv-btns">
+      <button class="cnv-btn-fix" onclick="fixResults()">
+        <i class="fas fa-wand-magic-sparkles"></i> Natijani tuzatish
+      </button>
+      <button class="cnv-btn-done" onclick="addToMeals()">Saqlash</button>
+    </div>
+
+  </div><!-- /cnv-sheet -->
+</div><!-- /cnv-screen -->
+
+</template>
+
+<!-- DIARY -->
+<template id="tpl-diary">
+<div class="inner-page">
+  <div class="inner-container narrow">
+    <div class="inner-header">
+      <div class="diary-header-row">
+        <div>
+          <h2 data-i18n="diary_title">Bugungi kundalik</h2>
+          <p class="inner-sub" data-i18n="diary_sub">Kaloriya progress va ovqat ro'yxati</p>
+        </div>
+        <div id="streakBadge" class="streak-badge" style="display:none">
+          <span class="streak-fire">🔥</span>
+          <span id="streakNum">0</span>
+          <span class="streak-lbl">kun</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RING -->
+    <div class="calring-card">
+      <div class="calring-wrap">
+        <svg viewBox="0 0 240 240" class="calring-svg">
+          <circle cx="120" cy="120" r="100" fill="none" stroke="rgba(74,92,106,.2)" stroke-width="14"/>
+          <circle id="ringArc" cx="120" cy="120" r="100" fill="none" stroke="url(#rg1)" stroke-width="14"
+            stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="628"
+            transform="rotate(-90 120 120)" style="transition:stroke-dashoffset 1.4s ease,stroke .8s ease"/>
+          <defs>
+            <linearGradient id="rg1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8db178" id="rg1a"/>
+              <stop offset="100%" stop-color="#ea4c37" id="rg1b"/>
+            </linearGradient>
+          </defs>
+          <text id="ringCal" x="120" y="110" text-anchor="middle" fill="#CCD0CF" font-size="38" font-weight="800" font-family="Segoe UI,sans-serif">0</text>
+          <text x="120" y="135" text-anchor="middle" fill="#9BA8AB" font-size="12" font-family="Segoe UI,sans-serif">kcal iste'mol</text>
+          <text id="ringPct" x="120" y="156" text-anchor="middle" fill="#5BA3C8" font-size="12" font-weight="700" font-family="Segoe UI,sans-serif">0%</text>
+        </svg>
+      </div>
+      <div class="calring-meta">
+        <div class="crm-item"><span class="crm-dot blue"></span><span data-i18n="diary_goal">Maqsad</span><strong id="ringGoal">— kcal</strong></div>
+        <div class="crm-item"><span class="crm-dot green"></span><span data-i18n="diary_remain">Qolgan</span><strong id="crRemain">—</strong></div>
+        <div class="crm-item"><span class="crm-dot orange"></span><span data-i18n="diary_consumed">Iste'mol</span><strong id="crConsumed">0 kcal</strong></div>
+      </div>
+      <div class="calring-status" id="calringStatus">Hali hech narsa yemagansiz</div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="diary-progress-card">
+      <div class="dp-header">
+        <span data-i18n="diary_prog_h">Kunlik progress</span>
+        <span><strong id="consumedCal">0</strong> / <strong id="goalCal">—</strong></span>
+      </div>
+      <div class="dp-bar"><div id="calBarFill" class="dp-fill" style="width:0%"></div></div>
+      <div class="dp-stats">
+        <div class="dp-stat"><div id="mRemain" class="dp-val">—</div><div data-i18n="dp_remain">Qolgan</div></div>
+        <div class="dp-stat"><div id="mPct" class="dp-val">0%</div><div data-i18n="dp_done">Bajarildi</div></div>
+        <div class="dp-stat"><div id="mStatus" class="dp-val">—</div><div data-i18n="dp_status">Holat</div></div>
+      </div>
+    </div>
+
+    <!-- WEEKLY CHART -->
+    <div class="week-chart-card">
+      <div class="wcc-header">
+        <span class="wcc-title">📊 Haftalik kaloriya</span>
+        <span class="wcc-goal-lbl" id="wccGoalLbl"></span>
+      </div>
+      <div class="wcc-chart">
+        <div class="wcc-bars" id="wccBars">
+          <!-- filled by JS -->
+        </div>
+        <div class="wcc-days" id="wccDays"></div>
+      </div>
+    </div>
+
+    <!-- WATER TRACKER -->
+    <div class="water-card">
+      <div class="water-top">
+        <div class="water-info">
+          <span class="water-title">💧 Su iste'moli</span>
+          <span class="water-sub">Kunlik maqsad: 2000 ml</span>
+        </div>
+        <div class="water-amount-badge">
+          <span id="waterMl">0</span><small> ml</small>
+        </div>
+      </div>
+      <div class="water-drops" id="waterDrops"></div>
+      <div class="water-progress-bar">
+        <div class="water-progress-fill" id="waterFill" style="width:0%"></div>
+      </div>
+      <div class="water-btns">
+        <button class="water-add-btn" onclick="addWater(250)">+ 250 ml</button>
+        <button class="water-add-btn water-add-lg" onclick="addWater(500)">+ 500 ml</button>
+        <button class="water-rem-btn" onclick="removeWater()" title="Oxirginini o'chirish">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ADD MEAL -->
+    <div class="meal-add-form">
+      <input type="text" id="mealName" placeholder="Ovqat nomi" data-i18n="meal_ph1"/>
+      <input type="number" id="mealCal" placeholder="kcal" data-i18n="meal_ph2"/>
+      <button class="tbtn tbtn-fill" onclick="addMealManual()"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <!-- MEALS LIST -->
+    <div class="meals-list">
+      <div class="meals-list-header">
+        <span data-i18n="meals_h">Bugungi ovqatlar</span>
+        <button class="tbtn tbtn-line sm" onclick="showPage('scan')"><i class="fas fa-camera"></i> <span data-i18n="meals_scan_btn">Skanerlash</span></button>
+      </div>
+      <div id="mealsList"></div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- PROFILE -->
+<template id="tpl-profile">
+<div class="inner-page">
+  <div class="inner-container narrow">
+    <div class="inner-header">
+      <h2 data-i18n="prof_title">Profilim</h2>
+    </div>
+    <div id="profileContent"></div>
+
+    <!-- WEIGHT LOG -->
+    <div class="weight-card" id="weightCard" style="display:none">
+      <div class="wt-header">
+        <span class="wt-title">⚖️ Vazn kuzatuvi</span>
+        <span class="wt-today" id="wtTodayVal"></span>
+      </div>
+      <div class="wt-input-row">
+        <input type="number" id="wtInput" class="wt-input" placeholder="Bugungi vazn (kg)" step="0.1" min="20" max="300">
+        <button class="wt-save-btn" onclick="saveWeight()">Saqlash</button>
+      </div>
+      <div class="wt-chart-wrap" id="wtChart"></div>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- SETUP -->
+<template id="tpl-setup">
+<div class="inner-page">
+  <div class="inner-container narrow">
+    <div class="inner-header">
+      <h2>Parametrlaringiz</h2>
+      <p class="inner-sub">Kunlik kaloriya normangiz hisoblanadi</p>
+    </div>
+    <div class="card-panel">
+      <form id="setupForm" onsubmit="submitSetup(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Yosh</label>
+            <input type="number" name="age" min="10" max="100" required placeholder="25">
+          </div>
+          <div class="form-group">
+            <label>Jins</label>
+            <select name="gender" required>
+              <option value="">Tanlang</option>
+              <option value="male">Erkak</option>
+              <option value="female">Ayol</option>
+            </select>
+          </div>
+        </div>
+        <div class="rulers-row">
+          <div class="form-group">
+            <label>Vazn (kg)</label>
+            <div class="ruler-widget" id="weightWidget">
+              <div class="rw-track" id="weightTrack">
+                <div class="rw-strip" id="weightStrip"></div>
+                <div class="rw-overlay">
+                  <div class="rw-glow-bar"></div>
+                  <div class="rw-knob"><i class="fas fa-sort"></i></div>
+                </div>
+              </div>
+              <div class="rw-display">
+                <div class="rw-val" id="weightDisplay">70</div>
+                <div class="rw-unit">kg</div>
+              </div>
+            </div>
+            <input type="hidden" name="weight" id="weightHidden" value="70">
+          </div>
+
+          <div class="form-group">
+            <label>Bo'y (sm)</label>
+            <div class="ruler-widget" id="heightWidget">
+              <div class="rw-track" id="heightTrack">
+                <div class="rw-strip" id="heightStrip"></div>
+                <div class="rw-overlay">
+                  <div class="rw-glow-bar"></div>
+                  <div class="rw-knob"><i class="fas fa-sort"></i></div>
+                </div>
+              </div>
+              <div class="rw-display">
+                <div class="rw-val" id="heightDisplay">170</div>
+                <div class="rw-unit">sm</div>
+              </div>
+            </div>
+            <input type="hidden" name="height" id="heightHidden" value="170">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Faollik darajasi</label>
+          <select name="activity" required>
+            <option value="">Tanlang</option>
+            <option value="sedentary">Kam harakatli (ofis ishi)</option>
+            <option value="light">Engil faol (haftada 1-3 kun sport)</option>
+            <option value="moderate">O'rtacha faol (haftada 3-5 kun)</option>
+            <option value="active">Faol (haftada 6-7 kun)</option>
+            <option value="very_active">Juda faol (sport + jismoniy ish)</option>
+          </select>
+        </div>
+        <button type="submit" class="tbtn tbtn-fill full">Hisoblash</button>
+      </form>
+    </div>
+  </div>
+</div>
+</template>
+
+<!-- LOGIN -->
+<template id="tpl-login">
+<div class="inner-page auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">EatRight</div>
+    <h2>Kirish</h2>
+    <form id="loginForm" onsubmit="doLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+      <div class="form-group"><label>Parol</label><input type="password" name="password" required></div>
+      <button type="submit" class="tbtn tbtn-fill full">Kirish</button>
+      <div id="loginMsg" class="msg-box"></div>
+    </form>
+    <p class="auth-switch">Hisobingiz yo'qmi? <a href="#" onclick="showPage('register')">Ro'yxatdan o'ting</a></p>
+  </div>
+</div>
+</template>
+
+<!-- REGISTER -->
+<template id="tpl-register">
+<div class="inner-page auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">EatRight</div>
+    <h2>Ro'yxatdan o'tish</h2>
+    <form id="registerForm" onsubmit="doRegister(event)">
+      <div class="form-group"><label>Ism</label><input type="text" name="name" required></div>
+      <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+      <div class="form-group"><label>Parol</label><input type="password" name="password" required minlength="6"></div>
+      <button type="submit" class="tbtn tbtn-fill full">Ro'yxatdan o'tish</button>
+      <div id="registerMsg" class="msg-box"></div>
+    </form>
+    <p class="auth-switch">Hisobingiz bormi? <a href="#" onclick="showPage('login')">Kiring</a></p>
+  </div>
+</div>
+</template>
+
+<!-- RECIPES PAGE — Figma EasyHealth community feed style -->
+<template id="tpl-recipes">
+<div class="rcp-page">
+
+  <!-- Search bar -->
+  <div class="rcp-search-bar">
+    <div class="rcp-search-inner">
+      <i class="fas fa-search rcp-search-icon"></i>
+      <input type="text" class="rcp-search-input" placeholder="Retsept qidiring...">
+    </div>
+  </div>
+
+  <!-- Category filters — Figma style horizontal scroll -->
+  <div class="rcp-filters">
+    <button class="rcp-filter active">Barchasi</button>
+    <button class="rcp-filter">🐟 Baliq</button>
+    <button class="rcp-filter">🍓 Mevalar</button>
+    <button class="rcp-filter">🥦 Sabzavot</button>
+    <button class="rcp-filter">🌿 Vegan</button>
+    <button class="rcp-filter">🥩 Oqsil</button>
+    <button class="rcp-filter">🌾 Don</button>
+  </div>
+
+  <!-- Popular creators — Figma Creadores populares -->
+  <div class="rcp-creators-section">
+    <h3 class="rcp-section-title">Mashhur oshpazlar</h3>
+    <div class="rcp-creators-scroll">
+      <div class="rcp-creator">
+        <div class="rcp-cr-av" style="background:linear-gradient(135deg,#8db178,#486b38)">A</div>
+        <span>Aziza</span>
+      </div>
+      <div class="rcp-creator">
+        <div class="rcp-cr-av" style="background:linear-gradient(135deg,#ea4c37,#fddf9e)">M</div>
+        <span>Malika</span>
+      </div>
+      <div class="rcp-creator">
+        <div class="rcp-cr-av" style="background:linear-gradient(135deg,#282d46,#5BA3C8)">J</div>
+        <span>Jasur</span>
+      </div>
+      <div class="rcp-creator">
+        <div class="rcp-cr-av" style="background:linear-gradient(135deg,#fddf9e,#ea4c37)">N</div>
+        <span>Nodira</span>
+      </div>
+      <div class="rcp-creator">
+        <div class="rcp-cr-av" style="background:linear-gradient(135deg,#b9caaf,#8db178)">S</div>
+        <span>Sarvar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe feed cards -->
+  <div class="rcp-section-title-row">
+    <h3 class="rcp-section-title">Tavsiya etilgan</h3>
+    <a href="#" class="rcp-see-all">Barchasi →</a>
+  </div>
+  <div class="rcp-feed">
+
+    <div class="rcp-card">
+      <div class="rcp-card-img rcp-img-1">
+        <span class="rcp-card-kcal">🔥 320 kal</span>
+        <button class="rcp-card-save"><i class="fas fa-bookmark"></i></button>
+      </div>
+      <div class="rcp-card-body">
+        <div class="rcp-card-meta"><span class="rcp-tag">Sabzavot</span><span class="rcp-time">⏱ 25 min</span></div>
+        <h4>Toshkent salatasi</h4>
+        <p>Yangi sabzavotlar, zeytun moyi va ko'k o't bilan</p>
+        <div class="rcp-card-footer">
+          <div class="rcp-author"><div class="rcp-av" style="background:#8db178">A</div><span>Aziza</span></div>
+          <div class="rcp-macros"><span>B:8g</span><span>Y:12g</span><span>U:18g</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rcp-card">
+      <div class="rcp-card-img rcp-img-2">
+        <span class="rcp-card-kcal">🔥 485 kal</span>
+        <button class="rcp-card-save"><i class="fas fa-bookmark"></i></button>
+      </div>
+      <div class="rcp-card-body">
+        <div class="rcp-card-meta"><span class="rcp-tag rcp-tag-protein">Oqsil</span><span class="rcp-time">⏱ 40 min</span></div>
+        <h4>Grillda pishirilgan losos</h4>
+        <p>Omega-3 boy baliq, limon va aromatik o'tlar bilan</p>
+        <div class="rcp-card-footer">
+          <div class="rcp-author"><div class="rcp-av" style="background:#ea4c37">M</div><span>Malika</span></div>
+          <div class="rcp-macros"><span>B:42g</span><span>Y:18g</span><span>U:2g</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rcp-card">
+      <div class="rcp-card-img rcp-img-3">
+        <span class="rcp-card-kcal">🔥 210 kal</span>
+        <button class="rcp-card-save"><i class="fas fa-bookmark"></i></button>
+      </div>
+      <div class="rcp-card-body">
+        <div class="rcp-card-meta"><span class="rcp-tag rcp-tag-vegan">Vegan</span><span class="rcp-time">⏱ 15 min</span></div>
+        <h4>Smoothie bowl</h4>
+        <p>Meva va yong'oq asosidagi quvvat beruvchi nonushta</p>
+        <div class="rcp-card-footer">
+          <div class="rcp-author"><div class="rcp-av" style="background:#fddf9e;color:#333">N</div><span>Nodira</span></div>
+          <div class="rcp-macros"><span>B:6g</span><span>Y:5g</span><span>U:38g</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rcp-card">
+      <div class="rcp-card-img rcp-img-4">
+        <span class="rcp-card-kcal">🔥 390 kal</span>
+        <button class="rcp-card-save"><i class="fas fa-bookmark"></i></button>
+      </div>
+      <div class="rcp-card-body">
+        <div class="rcp-card-meta"><span class="rcp-tag rcp-tag-grain">Don</span><span class="rcp-time">⏱ 30 min</span></div>
+        <h4>Karamatli osh</h4>
+        <p>Ziravorlar bilan pishirilgan sog'lom palov</p>
+        <div class="rcp-card-footer">
+          <div class="rcp-author"><div class="rcp-av" style="background:#282d46">S</div><span>Sarvar</span></div>
+          <div class="rcp-macros"><span>B:12g</span><span>Y:8g</span><span>U:62g</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</template>
+
+<!-- TRAINER PAGE — Figma Entrenador personal style -->
+<template id="tpl-trainer">
+<div class="trn-page">
+
+  <!-- Header -->
+  <div class="trn-header">
+    <h2 class="trn-title">Shaxsiy <span class="ea-grad">Trener</span></h2>
+    <p class="trn-subtitle">O'zingizga mos trener tanlang va maqsadingizga erishing</p>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="trn-stats">
+    <div class="trn-stat"><span class="trn-stat-num">48</span><span class="trn-stat-lbl">Trener</span></div>
+    <div class="trn-stat-div"></div>
+    <div class="trn-stat"><span class="trn-stat-num">1,240</span><span class="trn-stat-lbl">Mashg'ulot</span></div>
+    <div class="trn-stat-div"></div>
+    <div class="trn-stat"><span class="trn-stat-num">4.9⭐</span><span class="trn-stat-lbl">Reyting</span></div>
+  </div>
+
+  <!-- Filter tabs -->
+  <div class="trn-filters">
+    <button class="trn-filter active">Barchasi</button>
+    <button class="trn-filter">💪 Kuch</button>
+    <button class="trn-filter">🏃 Kardio</button>
+    <button class="trn-filter">🧘 Yoga</button>
+    <button class="trn-filter">🥊 Boks</button>
+  </div>
+
+  <!-- Trainer cards -->
+  <div class="trn-grid">
+
+    <div class="trn-card">
+      <div class="trn-card-top">
+        <div class="trn-avatar" style="background:linear-gradient(135deg,#8db178,#282d46)">
+          <span>💪</span>
+        </div>
+        <div class="trn-medal">🥇</div>
+      </div>
+      <h4>Bobur Karimov</h4>
+      <p class="trn-spec">Kuch va mushak</p>
+      <div class="trn-tags"><span>Kuch</span><span>Kardio</span></div>
+      <div class="trn-rating">⭐ 4.9 <span>(128 sharh)</span></div>
+      <div class="trn-actions">
+        <button class="trn-btn-cal"><i class="fas fa-calendar"></i> Jadval</button>
+        <button class="trn-btn-chat"><i class="fas fa-comment"></i> Chat</button>
+      </div>
+    </div>
+
+    <div class="trn-card">
+      <div class="trn-card-top">
+        <div class="trn-avatar" style="background:linear-gradient(135deg,#ea4c37,#fddf9e)">
+          <span>🧘</span>
+        </div>
+        <div class="trn-medal">🥈</div>
+      </div>
+      <h4>Malika Yusupova</h4>
+      <p class="trn-spec">Yoga va meditatsiya</p>
+      <div class="trn-tags"><span>Yoga</span><span>Nafas</span></div>
+      <div class="trn-rating">⭐ 4.8 <span>(96 sharh)</span></div>
+      <div class="trn-actions">
+        <button class="trn-btn-cal"><i class="fas fa-calendar"></i> Jadval</button>
+        <button class="trn-btn-chat"><i class="fas fa-comment"></i> Chat</button>
+      </div>
+    </div>
+
+    <div class="trn-card">
+      <div class="trn-card-top">
+        <div class="trn-avatar" style="background:linear-gradient(135deg,#282d46,#5BA3C8)">
+          <span>🏃</span>
+        </div>
+      </div>
+      <h4>Jasur Toshmatov</h4>
+      <p class="trn-spec">Yugurish va kardio</p>
+      <div class="trn-tags"><span>Kardio</span><span>Endurance</span></div>
+      <div class="trn-rating">⭐ 4.7 <span>(74 sharh)</span></div>
+      <div class="trn-actions">
+        <button class="trn-btn-cal"><i class="fas fa-calendar"></i> Jadval</button>
+        <button class="trn-btn-chat"><i class="fas fa-comment"></i> Chat</button>
+      </div>
+    </div>
+
+    <div class="trn-card">
+      <div class="trn-card-top">
+        <div class="trn-avatar" style="background:linear-gradient(135deg,#b9caaf,#486b38)">
+          <span>🥊</span>
+        </div>
+      </div>
+      <h4>Sherzod Aliyev</h4>
+      <p class="trn-spec">Boks va kurash</p>
+      <div class="trn-tags"><span>Boks</span><span>Kuch</span></div>
+      <div class="trn-rating">⭐ 4.9 <span>(112 sharh)</span></div>
+      <div class="trn-actions">
+        <button class="trn-btn-cal"><i class="fas fa-calendar"></i> Jadval</button>
+        <button class="trn-btn-chat"><i class="fas fa-comment"></i> Chat</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA banner -->
+  <div class="trn-cta">
+    <div class="trn-cta-content">
+      <h3>Bepul sinov darsi</h3>
+      <p>Birinchi mashg'ulotingiz bepul! Hoziroq trener tanlang.</p>
+      <button class="trn-cta-btn">Boshlash →</button>
+    </div>
+    <div class="trn-cta-emoji">🏋️</div>
+  </div>
+
+</div>
+</template>
+
+<!-- ===== CATEGORY INFO MODAL ===== -->
+<div class="catm-overlay" id="catmOverlay" onclick="closeCatModal()"></div>
+<div class="catm-panel" id="catmPanel">
+  <div class="catm-header">
+    <div class="catm-title-row">
+      <span class="catm-icon" id="catmIcon"></span>
+      <h3 class="catm-title" id="catmTitle"></h3>
+    </div>
+    <button class="catm-close" onclick="closeCatModal()"><i class="fas fa-xmark"></i></button>
+  </div>
+
+  <!-- Rotating fact card -->
+  <div class="catm-fact-card" id="catmFactCard">
+    <div class="catm-fact-label"><i class="fas fa-lightbulb"></i> Qiziqarli fakt</div>
+    <p class="catm-fact-text" id="catmFactText"></p>
+    <div class="catm-fact-dots" id="catmFactDots"></div>
+    <div class="catm-fact-progress" id="catmFactProgress"></div>
+  </div>
+
+  <!-- Doctor advice -->
+  <div class="catm-advice-section">
+    <div class="catm-advice-label"><i class="fas fa-user-doctor"></i> Shifokor maslahati</div>
+    <div class="catm-advice-list" id="catmAdviceList"></div>
+  </div>
+
+  <!-- Nutrition highlights -->
+  <div class="catm-nutrients" id="catmNutrients"></div>
+</div>
+
+<!-- ===== AI SUPPORT CHAT WIDGET ===== -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="AI Yordam">
+  <i class="fas fa-comment-dots" id="chatFabIcon"></i>
+  <span class="chat-fab-badge" id="chatFabBadge" style="display:none">1</span>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+    <div class="chat-op-info">
+      <div class="chat-op-avatar">O</div>
+      <div>
+        <div class="chat-op-name">Otabek <span class="chat-op-badge">AI</span></div>
+        <div class="chat-op-status"><span class="chat-online-dot"></span> <span id="chatStatus" data-i18n="chat_status">Onlayn · 24/7</span></div>
+      </div>
+    </div>
+    <button class="chat-close-btn" onclick="toggleChat()"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button class="chat-sugg" data-suggest="chat_s1">🔥 Kaloriya norma</button>
+    <button class="chat-sugg" data-suggest="chat_s2">🥗 Ozish uchun</button>
+    <button class="chat-sugg" data-suggest="chat_s3">📊 Tahlil qil</button>
+    <button class="chat-sugg" data-suggest="chat_s4">📱 Yordam</button>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" class="chat-input" placeholder="Savol yozing..." data-i18n="chat_ph" onkeydown="if(event.key==='Enter')sendChat()">
+    <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+  </div>
+</div>
+
+<script src="/js/i18n.js?v=21"></script>
+<script src="/js/auth.js?v=21"></script>
+<script src="/js/app.js?v=22"></script>
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+</script>
+</body>
+</html>

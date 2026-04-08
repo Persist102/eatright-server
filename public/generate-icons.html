@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Icon Generator</title>
+<style>body{background:#06141B;color:#ccc;font-family:sans-serif;padding:30px;text-align:center;}
+canvas{display:none;}
+.btn{background:#5BA3C8;color:#fff;border:none;padding:12px 28px;border-radius:8px;cursor:pointer;font-size:1rem;margin:8px;}
+.btn:hover{background:#4a90b8;}
+h2{color:#4ade80;}
+</style>
+</head>
+<body>
+<h2>EatRight — Icon Generator</h2>
+<p>Ikonkalarni yaratib, yuklab olish uchun tugmalarni bosing</p>
+<canvas id="c192" width="192" height="192"></canvas>
+<canvas id="c512" width="512" height="512"></canvas>
+<br>
+<button class="btn" onclick="gen(192)">icon-192.png yuklab olish</button>
+<button class="btn" onclick="gen(512)">icon-512.png yuklab olish</button>
+
+<script>
+function drawIcon(ctx, size) {
+  const s = size;
+  const cx = s/2, cy = s/2;
+  const r = s * 0.34;
+  const sw = s * 0.043;
+
+  // Background
+  const bg = ctx.createLinearGradient(0,0,s,s);
+  bg.addColorStop(0,'#0d2233');
+  bg.addColorStop(1,'#06141B');
+
+  const radius = s * 0.215;
+  ctx.beginPath();
+  ctx.moveTo(radius, 0);
+  ctx.lineTo(s - radius, 0);
+  ctx.quadraticCurveTo(s, 0, s, radius);
+  ctx.lineTo(s, s - radius);
+  ctx.quadraticCurveTo(s, s, s - radius, s);
+  ctx.lineTo(radius, s);
+  ctx.quadraticCurveTo(0, s, 0, s - radius);
+  ctx.lineTo(0, radius);
+  ctx.quadraticCurveTo(0, 0, radius, 0);
+  ctx.closePath();
+  ctx.fillStyle = bg;
+  ctx.fill();
+
+  // Track ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(91,163,200,0.18)';
+  ctx.lineWidth = sw;
+  ctx.stroke();
+
+  // Progress ring (~75%)
+  const grad = ctx.createLinearGradient(cx-r, cy, cx+r, cy);
+  grad.addColorStop(0,'#5BA3C8');
+  grad.addColorStop(1,'#4ade80');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, -Math.PI/2, -Math.PI/2 + Math.PI * 1.5);
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = sw;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Text "ER"
+  ctx.font = `900 ${s*0.19}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#5BA3C8';
+  ctx.fillText('ER', cx, cy + s*0.04);
+
+  // Small leaf dot
+  ctx.beginPath();
+  ctx.arc(cx, cy - s*0.14, s*0.04, 0, Math.PI*2);
+  ctx.fillStyle = '#4ade80';
+  ctx.fill();
+}
+
+function gen(size) {
+  const id = 'c' + size;
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,size,size);
+  drawIcon(ctx, size);
+
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
+  a.download = `icon-${size}.png`;
+  a.click();
+}
+
+// Preview on load
+window.onload = () => {
+  [192, 512].forEach(size => {
+    const canvas = document.getElementById('c' + size);
+    canvas.style.display = 'inline-block';
+    canvas.style.margin = '20px';
+    canvas.style.borderRadius = '20px';
+    const ctx = canvas.getContext('2d');
+    drawIcon(ctx, size);
+  });
+};
+</script>
+</body>
+</html>

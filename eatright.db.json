@@ -1,0 +1,171 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@eatright.com",
+      "password": "$2a$10$iiNRc.UYaNUeUWbkxFQwH.3XDLAIs3ietROq66VL99eO62k/ecsSu",
+      "role": "admin",
+      "created_at": "2026-03-25T09:39:20.792Z"
+    },
+    {
+      "id": 2,
+      "name": "Aziz",
+      "email": "yuldoshev1026460@gmail.com",
+      "password": "$2a$10$3PHBK3Ms/im.w8iGv7z7G.Ibn7WWCrntnHXNxa2qVW606uuCRQcg2",
+      "role": "user",
+      "age": 26,
+      "gender": "male",
+      "weight": 70,
+      "height": 182,
+      "activity": "light",
+      "daily_calories": 2355,
+      "created_at": "2026-03-25T12:54:05.119Z",
+      "bmi": 21.1,
+      "bmi_status": "Normal"
+    }
+  ],
+  "scans": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "image": "/uploads/1774615475270.jpg",
+      "food_name": "Qatlamali shirinliklar",
+      "calories_per_100g": 380,
+      "estimated_weight_g": 150,
+      "total_calories": 570,
+      "protein_g": 9,
+      "carbs_g": 67.5,
+      "fat_g": 33,
+      "description": "Rasmdagi shaffof tarelkada uch bo'lak qatlamali shirinliklar tasvirlangan. Ulardan biri olma bo'laklari bilan to'ldirilgan pirogga o'xshaydi, qolganlari esa asal yoki shakar siropiga botirilgan, ehtimol baklavaga o'xshash shirinliklarga o'xshaydi. Ustki qismi yaltiroq va tilla rangda.",
+      "created_at": "2026-03-27T12:44:47.995Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "image": "/uploads/1774683451649.jpg",
+      "food_name": "Kesilgan olma",
+      "calories_per_100g": 52,
+      "estimated_weight_g": 280,
+      "total_calories": 146,
+      "protein_g": 0.8,
+      "carbs_g": 39.2,
+      "fat_g": 0.6,
+      "health_score": 9,
+      "ingredients": [
+        "Olma"
+      ],
+      "description": "Bir likopchada kesilgan yashil olmalar bo'laklari mavjud.",
+      "created_at": "2026-03-28T07:37:38.766Z"
+    },
+    {
+      "id": 3,
+      "user_id": 2,
+      "image": "/uploads/1775034579438.jpg",
+      "food_name": "Vafli pechene",
+      "calories_per_100g": 500,
+      "estimated_weight_g": 8,
+      "total_calories": 40,
+      "protein_g": 0.5,
+      "carbs_g": 5.2,
+      "fat_g": 2,
+      "health_score": 3,
+      "ingredients": [
+        "Un",
+        "Shakar",
+        "O'simlik yog'i",
+        "Sut kukuni",
+        "Aromatizator"
+      ],
+      "description": "Qo'lda ushlab turilgan kichik vafli pechene bo'lagi shirin va qarsillagan desertdir.",
+      "created_at": "2026-04-01T09:09:47.518Z"
+    },
+    {
+      "id": 4,
+      "user_id": 2,
+      "image": "/uploads/1775039299798.jpg",
+      "food_name": "Shirinliklar assortisi",
+      "calories_per_100g": 430,
+      "estimated_weight_g": 265,
+      "total_calories": 1140,
+      "protein_g": 16,
+      "carbs_g": 185,
+      "fat_g": 62,
+      "health_score": 3,
+      "ingredients": [
+        "Un",
+        "Shakar",
+        "O'simlik yog'i",
+        "Tuxum",
+        "Kakao kukuni",
+        "Xamirturush/Pishiriq kukuni",
+        "Ta'm beruvchilar"
+      ],
+      "description": "Bu taom tarkibida glazurlangan shirin pirojkalar va shokoladli vafli mavjud bo'lib, ular yuqori kaloriyali desertni tashkil etadi.",
+      "created_at": "2026-04-01T10:28:30.921Z"
+    }
+  ],
+  "meals": [],
+  "contacts": [],
+  "_id": {
+    "users": 3,
+    "scans": 5,
+    "meals": 2,
+    "contacts": 1,
+    "chat_messages": 7,
+    "water_logs": 3
+  },
+  "chat_messages": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "user_message": "salom",
+      "ai_reply": "Salom Aziz! 👋 Men EatRight ilovasining sog'lom ovqatlanish bo'yicha yordamchisi Otabekman. Bugun sizga qanday yordam bera olaman? Ovqatlanish, parhez, sport yoki ilova haqida savollaringiz bormi?",
+      "created_at": "2026-04-01T09:08:23.571Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "user_message": "sabzida qanday vitamin bor?",
+      "ai_reply": "Salom! Sabzi juda ko'p foydali vitamin va minerallarga boy, lekin ayniqsa **A vitamini (beta-karotin)** miqdori yuqori. 🥕 Bu vitamin ko'rish qobiliyati, immunitet tizimi va teri salomatligi uchun juda muhimdir. Shuningdek, sabzida K, C vitaminlari va kaliy ham mavjud.",
+      "created_at": "2026-04-01T09:09:03.451Z"
+    },
+    {
+      "id": 3,
+      "user_id": 2,
+      "user_message": "savolim bor",
+      "ai_reply": "Assalomu alaykum, Aziz! 👋 Otabekman, EatRight ilovasining sog'lom ovqatlanish bo'yicha yordamchi mutaxassisi. Marhamat, savolingizni bering, qo'limdan kelgancha yordam berishga tayyorman! 😊",
+      "created_at": "2026-04-01T10:28:49.128Z"
+    },
+    {
+      "id": 4,
+      "user_id": 2,
+      "user_message": "sabzi foydalikmi?",
+      "ai_reply": "Ha, albatta, sabzi juda foydali!🥕 U ko'rish qobiliyati uchun muhim bo'lgan A vitaminiga boy. Shuningdek, sabzi antioksidantlar va tola manbai bo'lib, immunitetni mustahkamlashga va ovqat hazm qilishni yaxshilashga yordam beradi. Uni xom holda ham, pishirilgan holda ham iste'mol qilish mumkin.",
+      "created_at": "2026-04-01T10:29:59.976Z"
+    },
+    {
+      "id": 5,
+      "user_id": 2,
+      "user_message": "hi",
+      "ai_reply": "Salom Aziz! 👋 Otabekman, EatRight ilovasining sog'lom ovqatlanish bo'yicha yordamchisi. Sizga qanday yordam bera olaman? 😊",
+      "created_at": "2026-04-02T10:04:18.430Z"
+    },
+    {
+      "id": 6,
+      "user_id": 2,
+      "user_message": "sabzi tarkibi",
+      "ai_reply": "Sabzi juda foydali sabzavot! 🥕 U ayniqsa beta-karotinga (A vitamini) boy bo'lib, ko'z salomatligi uchun juda muhim.\n\nShuningdek, tarkibida kletchatka, K1 vitamini, kaliy va turli xil antioksidantlar mavjud. U kam kaloriyali va organizm uchun ko'plab foydali moddalarni o'z ichiga oladi.",
+      "created_at": "2026-04-02T10:04:39.860Z"
+    }
+  ],
+  "water_logs": [
+    {
+      "id": 2,
+      "user_id": 2,
+      "amount_ml": 250,
+      "date": "2026-04-01",
+      "created_at": "2026-04-01T10:18:58.471Z"
+    }
+  ]
+}
