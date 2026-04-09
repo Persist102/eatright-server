@@ -630,7 +630,8 @@ function setLang(lang) {
   localStorage.setItem('privacyLang', lang);
 }
 
-const savedLang = localStorage.getItem('privacyLang') || localStorage.getItem('lang') || 'uz';
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+const savedLang = urlLang || localStorage.getItem('privacyLang') || 'uz';
 setLang(savedLang);
 </script>
 </body>
