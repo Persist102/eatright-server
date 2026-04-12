@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const auth = require('../middleware/auth');
+const { read, write, nextId } = require('../database');
 
 const CLAUDE_PROMPT = `You are an expert nutritionist AI specializing in Central Asian, Uzbek and CIS foods.
 Look at this food image VERY carefully. Identify each food item by its exact appearance, shape, color and texture.
