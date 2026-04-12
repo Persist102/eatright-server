@@ -62,15 +62,7 @@ router.post('/', async (req, res) => {
     if (!match) return res.status(400).json({ error: 'Ovqat aniqlanmadi' });
 
     const food = JSON.parse(match[0]);
-
-    const scan = {
-      id: nextId('scans'), user_id: req.user.id,
-      ...food, created_at: new Date().toISOString()
-    };
-    const data = read();
-    data.scans.push(scan);
-    write(data);
-    res.json(scan);
+    res.json(food);
 
   } catch (e) {
     res.status(500).json({ error: 'Xatolik: ' + e.message });
