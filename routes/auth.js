@@ -17,6 +17,7 @@ router.post('/register', (req, res) => {
     password: bcrypt.hashSync(password, 10),
     role: 'user', age: null, gender: null, weight: null,
     height: null, activity: null, daily_calories: null,
+    is_premium: false, free_scans_used: 0,
     created_at: new Date().toISOString()
   };
   const d = read();
@@ -43,7 +44,12 @@ router.get('/me', require('../middleware/auth'), (req, res) => {
   const user = data.users.find(u => u.id === req.user.id);
   if (!user) return res.status(404).json({ error: 'Topilmadi' });
   const { password, ...safe } = user;
-  res.json(safe);
+  res.json({
+    ...safe,
+    is_premium: !!safe.is_premium,
+    free_scans_used: safe.free_scans_used || 0,
+    scan_limit: 5
+  });
 });
 
 module.exports = router;

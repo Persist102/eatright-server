@@ -2,6 +2,8 @@ const router = require('express').Router();
 const auth = require('../middleware/auth');
 const { read, write, nextId } = require('../database');
 
+const FREE_SCAN_LIMIT = 5;
+
 const CLAUDE_PROMPT = `You are an expert nutritionist AI specializing in Central Asian, Uzbek and CIS foods.
 Look at this food image VERY carefully. Identify each food item by its exact appearance, shape, color and texture.
 Do NOT confuse similar-looking foods — for example:
@@ -25,9 +27,23 @@ Return ONLY valid JSON (no markdown, no explanation):
 }
 Be precise — identify exact brand/type if visible on packaging.`;
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { base64, hint } = req.body;
   if (!base64) return res.status(400).json({ error: 'Rasm topilmadi' });
+
+  const data = read();
+  const user = data.users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'Foydalanuvchi topilmadi' });
+
+  const scansUsed = user.free_scans_used || 0;
+  if (!user.is_premium && scansUsed >= FREE_SCAN_LIMIT) {
+    return res.status(403).json({
+      error: 'SCAN_LIMIT_REACHED',
+      message: 'Bepul skanlar tugadi. Premium obuna oling!',
+      scans_used: scansUsed,
+      scan_limit: FREE_SCAN_LIMIT
+    });
+  }
 
   const prompt = hint
     ? `You are an expert nutritionist AI. The user says this food is: "${hint}". Analyze the image knowing it is "${hint}" and return accurate nutrition info.\nReturn ONLY valid JSON (no markdown):\n{\n  "food_name": "${hint}",\n  "total_calories": number,\n  "protein_g": number,\n  "carbs_g": number,\n  "fat_g": number,\n  "health_score": number 1-10,\n  "ingredients": [\n    { "name": "ingredient name in Uzbek or Russian", "grams": number, "calories": number, "protein_g": number, "carbs_g": number, "fat_g": number }\n  ]\n}`
@@ -62,7 +78,15 @@ router.post('/', async (req, res) => {
     if (!match) return res.status(400).json({ error: 'Ovqat aniqlanmadi' });
 
     const food = JSON.parse(match[0]);
-    res.json(food);
+
+    const d = read();
+    const u = d.users.find(u => u.id === req.user.id);
+    if (u && !u.is_premium) {
+      u.free_scans_used = (u.free_scans_used || 0) + 1;
+      write(d);
+    }
+
+    res.json({ ...food, scans_used: (user.free_scans_used || 0) + 1, scan_limit: FREE_SCAN_LIMIT, is_premium: !!user.is_premium });
 
   } catch (e) {
     res.status(500).json({ error: 'Xatolik: ' + e.message });
