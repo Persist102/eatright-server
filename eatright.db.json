@@ -6,7 +6,9 @@
       "email": "admin@eatright.com",
       "password": "$2a$10$iiNRc.UYaNUeUWbkxFQwH.3XDLAIs3ietROq66VL99eO62k/ecsSu",
       "role": "admin",
-      "created_at": "2026-03-25T09:39:20.792Z"
+      "created_at": "2026-03-25T09:39:20.792Z",
+      "is_premium": false,
+      "premium_until": null
     },
     {
       "id": 2,
@@ -22,7 +24,9 @@
       "daily_calories": 2355,
       "created_at": "2026-03-25T12:54:05.119Z",
       "bmi": 21.1,
-      "bmi_status": "Normal"
+      "bmi_status": "Normal",
+      "is_premium": false,
+      "premium_until": null
     }
   ],
   "scans": [
@@ -113,7 +117,8 @@
     "meals": 2,
     "contacts": 1,
     "chat_messages": 7,
-    "water_logs": 3
+    "water_logs": 3,
+    "payments": 1
   },
   "chat_messages": [
     {
@@ -167,5 +172,6 @@
       "date": "2026-04-01",
       "created_at": "2026-04-01T10:18:58.471Z"
     }
-  ]
+  ],
+  "payments": []
 }

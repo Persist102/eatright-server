@@ -1,0 +1,25 @@
+wing: eatright
+rooms:
+- name: middleware
+  description: Files from middleware/
+  keywords:
+  - middleware
+  - middleware
+- name: public
+  description: Files from public/
+  keywords:
+  - public
+  - public
+- name: backend
+  description: Files from routes/
+  keywords:
+  - backend
+  - routes
+- name: uploads
+  description: Files from uploads/
+  keywords:
+  - uploads
+  - uploads
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []

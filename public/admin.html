@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EatRight — Admin Panel</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f1117; --card: #1a1d27; --border: #2a2d3e;
+    --green: #7ec67a; --red: #f87171; --yellow: #fbbf24;
+    --text: #e2e8f0; --muted: #64748b;
+  }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+  /* LOGIN */
+  #login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+  .login-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 40px; width: 360px; }
+  .login-card h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .login-card p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-size: 15px; outline: none; transition: border-color .2s; }
+  .field input:focus { border-color: var(--green); }
+  .btn { width: 100%; background: var(--green); color: #0f1117; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: opacity .2s; }
+  .btn:hover { opacity: .85; }
+  .login-error { color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; min-height: 18px; }
+
+  /* DASHBOARD */
+  #dashboard { display: none; }
+  .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; }
+  .header-logo { font-size: 18px; font-weight: 800; }
+  .header-logo span { color: var(--green); }
+  .logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); padding: 7px 14px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .main { padding: 28px; max-width: 1200px; margin: 0 auto; }
+
+  /* STATS */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 22px; }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .stat-value { font-size: 32px; font-weight: 800; line-height: 1; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.yellow { color: var(--yellow); }
+  .stat-value.red { color: var(--red); }
+  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* SECTION */
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-size: 16px; font-weight: 700; }
+  .search-input { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; color: var(--text); font-size: 14px; outline: none; width: 220px; }
+  .search-input:focus { border-color: var(--green); }
+
+  /* TABLE */
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 12px 18px; font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+  td { padding: 13px 18px; font-size: 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge.premium { background: rgba(126,198,122,0.15); color: var(--green); border: 1px solid rgba(126,198,122,0.3); }
+  .badge.free { background: rgba(100,116,139,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  .action-btn { border: none; border-radius: 7px; padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity .2s; }
+  .action-btn:hover { opacity: .8; }
+  .action-btn.give-premium { background: rgba(126,198,122,0.2); color: var(--green); }
+  .action-btn.remove-premium { background: rgba(248,113,113,0.15); color: var(--red); }
+  .action-btn.delete { background: rgba(248,113,113,0.1); color: var(--red); margin-left: 6px; }
+
+  .avatar { width: 34px; height: 34px; border-radius: 10px; background: linear-gradient(135deg, var(--green), #3a8a36); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #0f1117; margin-right: 10px; }
+  .user-cell { display: flex; align-items: center; }
+  .user-name { font-weight: 600; font-size: 14px; }
+  .user-email { font-size: 12px; color: var(--muted); }
+
+  .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+  .refresh-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); padding: 7px 14px; font-size: 13px; cursor: pointer; transition: all .2s; }
+  .refresh-btn:hover { border-color: var(--green); color: var(--green); }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 20px; font-size: 14px; font-weight: 500; transform: translateY(80px); opacity: 0; transition: all .3s; z-index: 999; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: rgba(126,198,122,0.4); color: var(--green); }
+  .toast.error { border-color: rgba(248,113,113,0.4); color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page">
+  <div class="login-card">
+    <h1>🥗 EatRight</h1>
+    <p>Admin paneliga kirish</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="admin@eatright.com" />
+    </div>
+    <div class="field">
+      <label>Parol</label>
+      <input type="password" id="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()" />
+    </div>
+    <button class="btn" onclick="login()">Kirish</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="header">
+    <div class="header-logo">Eat<span>Right</span> Admin</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="refresh-btn" onclick="loadAll()">⟳ Yangilash</button>
+      <button class="logout-btn" onclick="logout()">Chiqish</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Jami foydalanuvchilar</div>
+        <div class="stat-value" id="s-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Premium</div>
+        <div class="stat-value green" id="s-premium">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bepul</div>
+        <div class="stat-value" id="s-free">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Bugun yangi</div>
+        <div class="stat-value yellow" id="s-today">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Oy daromadi</div>
+        <div class="stat-value green" id="s-month">—</div>
+        <div class="stat-sub" id="s-total-rev"></div>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div class="section-header">
+      <div class="section-title">Foydalanuvchilar</div>
+      <input class="search-input" id="search" placeholder="Qidirish..." oninput="filterUsers()" />
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Foydalanuvchi</th>
+            <th>Status</th>
+            <th>Premium muddat</th>
+            <th>Qo'shilgan</th>
+            <th>Amallar</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr><td colspan="5" class="loading">Yuklanmoqda...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';
+let TOKEN = localStorage.getItem('admin_token') || '';
+let ALL_USERS = [];
+
+// ── Auth ─────────────────────────────────────────────────
+async function login() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const errEl    = document.getElementById('login-error');
+  errEl.textContent = '';
+  try {
+    const r = await fetch(`${API}/api/auth/login`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const d = await r.json();
+    if (!d.token) { errEl.textContent = d.error || 'Xatolik'; return; }
+    TOKEN = d.token;
+    localStorage.setItem('admin_token', TOKEN);
+    showDashboard();
+  } catch { errEl.textContent = 'Server bilan ulanib bo\'lmadi'; }
+}
+
+function logout() {
+  localStorage.removeItem('admin_token');
+  TOKEN = '';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('login-page').style.display = 'flex';
+}
+
+function showDashboard() {
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadAll();
+}
+
+// ── API ──────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const r = await fetch(`${API}/api/admin${path}`, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+  });
+  if (r.status === 401 || r.status === 403) { logout(); return null; }
+  return r.json();
+}
+
+async function loadAll() {
+  loadStats();
+  loadUsers();
+}
+
+// ── Stats ────────────────────────────────────────────────
+async function loadStats() {
+  const d = await api('/stats');
+  if (!d) return;
+  document.getElementById('s-total').textContent   = d.totalUsers;
+  document.getElementById('s-premium').textContent = d.premiumUsers;
+  document.getElementById('s-free').textContent    = d.freeUsers;
+  document.getElementById('s-today').textContent   = d.newToday;
+  document.getElementById('s-month').textContent   = fmt(d.monthRevenue);
+  document.getElementById('s-total-rev').textContent = `Jami: ${fmt(d.totalRevenue)}`;
+}
+
+function fmt(n) {
+  if (!n) return '0 so\'m';
+  return n.toLocaleString('uz') + ' so\'m';
+}
+
+// ── Users ────────────────────────────────────────────────
+async function loadUsers() {
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" class="loading">Yuklanmoqda...</td></tr>';
+  const data = await api('/users');
+  if (!data) return;
+  ALL_USERS = data;
+  renderUsers(ALL_USERS);
+}
+
+function renderUsers(users) {
+  const tbody = document.getElementById('users-tbody');
+  if (!users.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="loading">Foydalanuvchi yo\'q</td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(u => `
+    <tr id="row-${u.id}">
+      <td>
+        <div class="user-cell">
+          <div class="avatar">${(u.name || '?')[0].toUpperCase()}</div>
+          <div>
+            <div class="user-name">${esc(u.name || '—')}</div>
+            <div class="user-email">${esc(u.email)}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <span class="badge ${u.is_premium ? 'premium' : 'free'}">
+          ${u.is_premium ? '⭐ Premium' : 'Free'}
+        </span>
+      </td>
+      <td style="color:var(--muted);font-size:13px">
+        ${u.premium_until ? new Date(u.premium_until).toLocaleDateString('uz-UZ') : '—'}
+      </td>
+      <td style="color:var(--muted);font-size:13px">
+        ${u.created_at ? new Date(u.created_at).toLocaleDateString('uz-UZ') : '—'}
+      </td>
+      <td>
+        ${u.is_premium
+          ? `<button class="action-btn remove-premium" onclick="setPremium(${u.id}, false)">Premium olish</button>`
+          : `<button class="action-btn give-premium" onclick="setPremium(${u.id}, true)">⭐ Premium berish</button>`
+        }
+        <button class="action-btn delete" onclick="deleteUser(${u.id}, '${esc(u.name)}')">O'chirish</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterUsers() {
+  const q = document.getElementById('search').value.toLowerCase();
+  renderUsers(ALL_USERS.filter(u =>
+    (u.name || '').toLowerCase().includes(q) ||
+    (u.email || '').toLowerCase().includes(q)
+  ));
+}
+
+async function setPremium(id, give) {
+  const d = await api(`/users/${id}/premium`, {
+    method: 'PATCH',
+    body: JSON.stringify({ is_premium: give, months: 12 })
+  });
+  if (!d) return;
+  toast(give ? '⭐ Premium berildi' : 'Premium olib tashlandi', give ? 'success' : 'error');
+  loadAll();
+}
+
+async function deleteUser(id, name) {
+  if (!confirm(`"${name}" foydalanuvchini o'chirasizmi?`)) return;
+  await api(`/users/${id}`, { method: 'DELETE' });
+  toast('Foydalanuvchi o\'chirildi', 'error');
+  loadAll();
+}
+
+// ── Utils ─────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── Init ──────────────────────────────────────────────────
+if (TOKEN) showDashboard();
+</script>
+</body>
+</html>

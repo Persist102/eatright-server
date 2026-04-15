@@ -18,6 +18,13 @@ app.use('/api/profile', require('./routes/profile'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/support', require('./routes/support'));
 app.use('/api/wellness', require('./routes/wellness'));
+app.use('/api/admin', require('./routes/admin'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
 
 app.get('/privacy', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'privacy.html'));
