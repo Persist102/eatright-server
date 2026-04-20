@@ -18,6 +18,7 @@ app.use('/api/profile', require('./routes/profile'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/support', require('./routes/support'));
 app.use('/api/wellness', require('./routes/wellness'));
+app.use('/api/text-scan', require('./routes/textScan'));
 app.use('/api/admin', require('./routes/admin'));
 
 app.use(express.static(path.join(__dirname, 'public')));
